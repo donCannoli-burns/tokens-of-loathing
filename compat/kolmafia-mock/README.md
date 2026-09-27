@@ -48,3 +48,33 @@ KOLMAFIA_MOCK_COMPAT=PASS
 
 This compatibility layer contains no live KoLmafia credentials, settings,
 sessions, cookies, or password hashes.
+
+
+## Consumer integration: kol-agent-sandbox
+
+The verified downstream consumer is
+[`donCannoli-burns/kol-agent-sandbox`](https://github.com/donCannoli-burns/kol-agent-sandbox).
+
+That project owns sandbox isolation, live-vs-sandbox boundaries, read-only
+mirrors, and agent workflow. This repository owns the data compatibility
+boundary needed to make the pinned upstream `kolmafia-mock` run against the
+current SQLite-backed client.
+
+For downstream consumers, use:
+
+```bash
+bash compat/kolmafia-mock/materialize.sh --mock-dir /path/to/kolmafia-mock
+```
+
+The materializer:
+
+1. prepares the exact pinned upstream mock checkout;
+2. builds and packs this client;
+3. applies the narrow legacy data overlay;
+4. stores a local SQLite snapshot with the mock;
+5. runs the original upstream seven-test suite unchanged;
+6. writes `.kolmafia-mock-compat/compat-manifest.json`.
+
+`kol-agent-sandbox` pins a verified commit of this repository and calls this
+entrypoint during its host bootstrap. A compatibility PASS provides mock/test
+evidence only; it does not grant authority for live KoLmafia actions.
