@@ -34,7 +34,10 @@ No `/graphql` endpoint is recreated.
 3. clones the exact pinned upstream kolmafia-mock revision;
 4. replaces only upstream `src/data.ts` with `data.ts` from this directory;
 5. points its `data-of-loathing` dependency at the locally packed client;
-6. runs the original upstream Vitest suite unchanged.
+6. downloads one SQLite snapshot and exposes its local path to every Vitest worker;
+7. runs the original upstream Vitest suite unchanged.
+
+Using one local snapshot is intentional: Vitest runs test files in parallel. Letting every worker use the default URL/cache strategy can race while refreshing the shared cache, producing transient errors such as `TableNotFoundException: no such table: items`. The compatibility verifier removes that race without serializing or altering the upstream tests.
 
 Success is:
 
