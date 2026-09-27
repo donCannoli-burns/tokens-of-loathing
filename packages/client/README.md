@@ -28,6 +28,25 @@ You can point it at a local file instead:
 const client = createClient({ strategy: "local", path: "./dol.sqlite" });
 ```
 
+## KoLmafia mock compatibility
+
+For legacy `kolmafia-mock` consumers that still expect the former v2
+GraphQL-shaped data object, this fork exposes a Node-only compatibility subpath:
+
+```ts
+import { createKolmafiaMockLegacyData } from "data-of-loathing/legacy-mock";
+
+const { client, data } = await createKolmafiaMockLegacyData();
+```
+
+The adapter uses the normal SQLite-backed client internally and projects items,
+classes, paths, skills, and familiars into the narrow `allX.nodes` shape used
+by the pinned upstream mock. It does not recreate or call the retired
+`/graphql` endpoint.
+
+See `compat/kolmafia-mock/` at the repository root for the pinned upstream
+verification harness.
+
 ## Browser
 
 Three strategies are available in the browser, each with different trade-offs.
