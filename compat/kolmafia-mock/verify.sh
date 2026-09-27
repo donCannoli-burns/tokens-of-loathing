@@ -7,6 +7,8 @@ UPSTREAM_REF="${KOLMAFIA_MOCK_REF:-5c53bf4a5ee64d84710e7788409862bd8d2a1661}"
 WORK_ROOT="${KOLMAFIA_MOCK_COMPAT_WORK_ROOT:-$(mktemp -d)}"
 MOCK_DIR="$WORK_ROOT/kolmafia-mock"
 PACK_DIR="$WORK_ROOT/pack"
+SQLITE_PATH="$WORK_ROOT/dol.sqlite"
+DATA_URL="${DATA_OF_LOATHING_URL:-https://data.loathers.net/dol.sqlite}"
 
 cleanup() {
   if [[ -z "${KOLMAFIA_MOCK_COMPAT_KEEP_WORK:-}" ]]; then
@@ -59,9 +61,32 @@ echo "== install patched kolmafia-mock =="
   yarn install --no-immutable
 )
 
+echo "== download one SQLite snapshot for all Vitest workers =="
+node - "$DATA_URL" "$SQLITE_PATH" <<'NODE'
+const fs = require("node:fs/promises");
+const [url, destination] = process.argv.slice(2);
+
+(async () => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to download SQLite snapshot: ${response.status} ${response.statusText}`);
+  }
+  const bytes = Buffer.from(await response.arrayBuffer());
+  if (bytes.length < 16 || bytes.subarray(0, 16).toString("utf8") !== "SQLite format 3\u0000") {
+    throw new Error("Downloaded file is not a SQLite 3 database");
+  }
+  await fs.writeFile(destination, bytes);
+  process.stdout.write(`sqlite_bytes=${bytes.length}\n`);
+})().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+NODE
+
 echo "== run original upstream kolmafia-mock tests =="
 (
   cd "$MOCK_DIR"
+  export KOLMAFIA_MOCK_DOL_SQLITE="$SQLITE_PATH"
   yarn vitest run
 )
 
