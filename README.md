@@ -12,3 +12,15 @@ It has four parts:
 The public database is hosted at [data.loathers.net](https://data.loathers.net). The client defaults to this endpoint, so most users only need to install the npm package.
 
 See [packages/client/README.md](packages/client/README.md) for usage documentation.
+
+
+## KoLmafia mock / agent sandbox integration
+
+This fork carries a verified compatibility bridge for the pinned upstream
+`loathers/kolmafia-mock`. The bridge is consumed by
+[`donCannoli-burns/kol-agent-sandbox`](https://github.com/donCannoli-burns/kol-agent-sandbox)
+during sandbox bootstrap.
+
+Compatibility implementation and verification live under
+[`compat/kolmafia-mock/`](compat/kolmafia-mock/README.md). The normal
+SQLite-backed client API remains the primary API.
