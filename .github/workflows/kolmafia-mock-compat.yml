@@ -1,0 +1,28 @@
+name: kolmafia-mock compatibility
+
+on:
+  push:
+    branches:
+      - "kolmafia-mock-compat"
+    paths:
+      - "packages/client/**"
+      - "compat/kolmafia-mock/**"
+      - ".github/workflows/kolmafia-mock-compat.yml"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Verify legacy compatibility against pinned upstream kolmafia-mock
+        run: bash compat/kolmafia-mock/verify.sh

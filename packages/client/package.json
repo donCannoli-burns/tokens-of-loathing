@@ -18,6 +18,10 @@
     "./vite": {
       "types": "./dist/vite.d.ts",
       "default": "./dist/vite.js"
+    },
+    "./legacy-mock": {
+      "types": "./dist/legacy-mock.d.ts",
+      "default": "./dist/legacy-mock.js"
     }
   },
   "files": [

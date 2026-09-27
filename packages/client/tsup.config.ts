@@ -6,6 +6,7 @@ export default defineConfig([
       browser: "src/browser.ts",
       node: "src/node.ts",
       vite: "src/vite.ts",
+      "legacy-mock": "src/legacy-mock.ts",
     },
     format: "esm",
     dts: true,
