@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 LAB_DIR=""
+MOCK_DIR_OVERRIDE=""
 WATERSHEEP_URL=""
 LIVE_RUNTIME=""
 RUN_CLIENT_TESTS=1
@@ -16,6 +17,7 @@ Usage:
 
 Options:
   --lab-dir PATH            disposable lab root (required)
+  --mock-dir PATH           reuse/materialize this disposable mock checkout
   --watersheep URL          run model benchmark after smoke tests
   --live-runtime PATH       require matching live don_combo evidence contract
   --samples-per-class N     labeled scenarios per class (default: 8)
@@ -31,6 +33,7 @@ EOF
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --lab-dir) LAB_DIR="$2"; shift 2 ;;
+    --mock-dir) MOCK_DIR_OVERRIDE="$2"; shift 2 ;;
     --watersheep) WATERSHEEP_URL="$2"; shift 2 ;;
     --live-runtime) LIVE_RUNTIME="$2"; shift 2 ;;
     --samples-per-class) SAMPLES_PER_CLASS="$2"; shift 2 ;;
@@ -55,7 +58,11 @@ if [[ "$SAMPLES_PER_CLASS" -lt 1 ]]; then
 fi
 
 LAB_DIR="$(mkdir -p "$LAB_DIR" && cd "$LAB_DIR" && pwd)"
-MOCK_DIR="$LAB_DIR/mock"
+if [[ -n "$MOCK_DIR_OVERRIDE" ]]; then
+  MOCK_DIR="$(mkdir -p "$(dirname "$MOCK_DIR_OVERRIDE")" && cd "$(dirname "$MOCK_DIR_OVERRIDE")" && pwd)/$(basename "$MOCK_DIR_OVERRIDE")"
+else
+  MOCK_DIR="$LAB_DIR/mock"
+fi
 RESULT_DIR="$LAB_DIR/results"
 BASE_ARGS=(--mock-dir "$MOCK_DIR")
 if [[ "$RUN_CLIENT_TESTS" -eq 0 ]]; then
