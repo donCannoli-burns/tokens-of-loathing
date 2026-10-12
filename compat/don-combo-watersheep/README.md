@@ -60,6 +60,22 @@ This always:
 
 No WaterSheep process is required for this substrate smoke.
 
+### Reuse an existing disposable mock
+
+When another tool already owns a disposable `kolmafia-mock` checkout (for
+example `kol-agent-sandbox`), reuse it rather than creating a second mock:
+
+```bash
+bash compat/don-combo-watersheep/materialize.sh \
+  --lab-dir /path/to/sandbox/work/don-combo-watersheep-lab \
+  --mock-dir /path/to/sandbox/mock/kolmafia-mock \
+  --skip-client-tests
+```
+
+The materializer still resets/re-verifies that mock against the pinned upstream
+revision before applying the lab overlay. Never point `--mock-dir` at a live
+KoLmafia installation.
+
 ## Run WaterSheep
 
 With the local model server available:
