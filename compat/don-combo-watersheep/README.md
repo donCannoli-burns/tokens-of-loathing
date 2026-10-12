@@ -141,3 +141,11 @@ POLICY deterministic metric calculation and authority boundary
 ```
 
 A benchmark PASS or a high model score grants no live KoL authority.
+
+## Pinned mock lookup note
+
+The pinned upstream `kolmafia-mock` revision has a string-lookup quirk in its
+`Item.get(name)` implementation: the string branch returns the internal cache
+key rather than the `Item` object. The lab deliberately does not patch that
+upstream behavior. Corpus/mock parity is therefore checked by stable numeric
+item ID and then by the returned mock item's name.
