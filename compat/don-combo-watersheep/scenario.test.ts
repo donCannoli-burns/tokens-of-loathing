@@ -23,7 +23,9 @@ describe("don_combo WaterSheep lab", () => {
 
     for (const item of corpus.items) {
       expect(cleanString(item.name)).toBe(item.name);
-      expect(MockItem.get(item.name).id).toBe(item.id);
+      const mockItem = MockItem.get(item.id);
+      expect(mockItem.id).toBe(item.id);
+      expect(mockItem.name).toBe(item.name);
     }
   });
 
