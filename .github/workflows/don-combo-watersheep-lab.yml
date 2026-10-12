@@ -1,0 +1,39 @@
+name: don_combo WaterSheep lab substrate
+
+on:
+  push:
+    branches:
+      - "v3"
+    paths:
+      - "packages/client/**"
+      - "compat/kolmafia-mock/**"
+      - "compat/don-combo-watersheep/**"
+      - ".github/workflows/don-combo-watersheep-lab.yml"
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Materialize deterministic lab and run corpus/mock smoke
+        run: |
+          bash compat/don-combo-watersheep/materialize.sh \
+            --lab-dir /tmp/don-combo-watersheep-ci \
+            --skip-client-tests
+
+      - name: Show lab manifest
+        if: always()
+        run: |
+          if [ -f /tmp/don-combo-watersheep-ci/lab-manifest.json ]; then
+            cat /tmp/don-combo-watersheep-ci/lab-manifest.json
+          fi
