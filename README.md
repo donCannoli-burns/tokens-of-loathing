@@ -24,3 +24,18 @@ during sandbox bootstrap.
 Compatibility implementation and verification live under
 [`compat/kolmafia-mock/`](compat/kolmafia-mock/README.md). The normal
 SQLite-backed client API remains the primary API.
+
+## don_combo WaterSheep lab
+
+This fork also carries an offline deterministic test world for
+`donCannoli-burns/don_combo` under:
+
+```text
+compat/don-combo-watersheep/
+```
+
+It reuses the verified SQLite-backed `kolmafia-mock` materializer, overlays
+`kol.js` only inside the disposable mock checkout, validates real KoL corpus
+entities, and can benchmark WaterSheep against explicit labeled fixtures using
+the shared `don-combo-watersheep-evidence/v1` contract. It is test
+infrastructure only and grants no live KoL authority.
